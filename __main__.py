@@ -1,5 +1,6 @@
 import pygame
 import sys
+import os
 
 from const import *
 import setup
@@ -8,10 +9,13 @@ import physics
 
 
 '''
-INITIALIZES PYGAME, FONT AND CLOCK 
+INITIALIZES PYGAME AND CLOCK, SEARCH PATH, CREATE FONT 
 '''
 pygame.init()
-font = pygame.font.Font("assets/JetBrainsMonoNerdFont-Bold.ttf" , 18)
+absolute_path = os.path.dirname(__file__)
+relative_path = 'assets/JetBrainsMonoNerdFont-Bold.ttf'
+full_path = os.path.join(absolute_path, relative_path)
+font = pygame.font.Font(full_path , 18)
 clock = pygame.time.Clock()
 
 '''
