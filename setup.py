@@ -4,7 +4,11 @@ import physics
 import setting
 from const import *
 
-def setup_grid(num):
+
+'''
+SETUPS n BY n GRID OF PARTICLES 
+'''
+def setup_grid(num) -> None:
     x_init = X_MID - num * SPC / 2
     y_init = Y_MID - num * SPC / 2
 
@@ -25,6 +29,9 @@ def setup_grid(num):
             x += SPC
         y += SPC
 
+'''
+SPAWNS n^2 PARTICLES RANDOMLY
+'''
 def setup_random(num) -> None: 
     num = num ** 2
 
