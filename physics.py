@@ -62,20 +62,8 @@ class Particle():
         for particle in particles:
             if particle.id != self.id:
                 dst = distance(self.x, particle.x, self.y, particle.y)
-                influence = smothing_kernel(dst)
-                self.density += MASS * influence
-    
-    #CALCULATE DENSITY GRADIENT
-    def calc_density_gradient(self) -> None:
-        self.density_gradient = [0,0]
-        for particle in particles:
-            if self.id != particle.id:
-                dst = distance(self.x, particle.x, self.y, particle.y)
-                if dst < S_RAD:
-                    dir = [(particle.x - self.x) / dst, (particle.y - self.y) / dst]
-                    slope = smothing_kernel_gradient(dst)
-                    self.density_gradient[0] += MASS * slope * dir[0]
-                    self.density_gradient[1] += MASS * slope * dir[1]
+                if dst <= S_RAD:
+                    self.density += MASS * CSK[int(dst)]
 
     #CALCULATE PRESSURE VALUE WITH DENSITY
     def convert_density_to_pressure(self) -> float:
@@ -92,11 +80,14 @@ class Particle():
                 dst = distance(self.x, particle.x, self.y, particle.y)
                 if dst < S_RAD:
                     dir = [(particle.x - self.x) / dst, (particle.y - self.y) / dst]
-                    slope = smothing_kernel_gradient(dst)
-                    particle.force[0] -= self.convert_density_to_pressure() * dir[0] * slope * MASS / particle.density
-                    particle.force[1] -= self.convert_density_to_pressure() * dir[1] * slope * MASS / particle.density
-                    self.force[0] += self.convert_density_to_pressure() * dir[0] * slope * MASS / self.density
-                    self.force[1] += self.convert_density_to_pressure() * dir[1] * slope * MASS / self.density
+                    slope = CSKG[int(dst)]
+                    pressure = self.convert_density_to_pressure() * slope * MASS 
+                    pressure_x = dir[0] * pressure
+                    pressure_y = dir[1] * pressure
+                    particle.force[0] -= pressure_x / particle.density
+                    particle.force[1] -= pressure_y / particle.density
+                    self.force[0] += pressure_x / self.density
+                    self.force[1] += pressure_y / self.density
                     
     #UPDATES COLOR OF THE PARTICLE ACCORDING TO THE PARTICLE DENSITY
     def update_color(self) -> None:
@@ -106,7 +97,6 @@ class Particle():
     def update(self) -> None:     
         self.calc_density()
         self.update_color()
-        self.calc_density_gradient()
         self.calculate_pressure_force()
         if setting.GRAVITY == 1:
             self.gravity()

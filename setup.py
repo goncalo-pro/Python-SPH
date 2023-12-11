@@ -2,6 +2,7 @@ import random
 
 import physics
 import setting
+import maths
 from const import *
 
 
@@ -46,6 +47,13 @@ def setup_random(num) -> None:
                 y
             )
         )
+
+def cache_smothing_kernel():
+    for i in range(S_RAD + 1):
+        CSK.append(maths.smothing_kernel(i))
+        CSKG.append(maths.smothing_kernel_gradient(i))
+
+cache_smothing_kernel()
 
 if setting.SETUP_SETTING == 0:
     setup_grid(setting.NUM)
